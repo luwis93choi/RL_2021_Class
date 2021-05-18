@@ -1,2 +1,5 @@
 /.vscode
 /log
+01_Tic_Tac_Toe/.vscode/settings.json
+01_Tic_Tac_Toe/__pycache__/agent.cpython-36.pyc
+.gitignore
