@@ -2,6 +2,8 @@ import random
 import numpy as np
 from itertools import product
 
+import copy
+
 class agent():
 
     def __init__(self, player_num=0):
@@ -33,8 +35,9 @@ class agent():
         # Draw random coordinate in board until it is verified as a valid move
         while True:
             
-            rand_x = random.randint(0, 2)
-            rand_y = random.randint(0, 2)
+            rand_action_idx = random.randint(0, len(self.action_space)-1)
+
+            rand_action = self.action_space[rand_action_idx]
 
             # If there is no more space on the board, skip current iteration and return illegal value
             if np.count_nonzero(board == 0) == 0:
@@ -42,11 +45,11 @@ class agent():
                 return [-1, -1]
 
             # If there is a space at the current coordinate, break the loop and use current action selection
-            elif board[rand_y, rand_x] == 0: 
+            elif board[rand_action[0], rand_action[1]] == 0: 
                 # board[rand_y, rand_x] = self.player_num
                 break
         
-        return [rand_y, rand_x]
+        return rand_action
 
     def remember(self, state, next_state, action, reward, done):
 
