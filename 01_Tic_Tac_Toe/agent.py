@@ -7,7 +7,7 @@ class agent():
 
         self.player_num = player_num
 
-    def play_random(self, board):
+    def act(self, board):
 
         ### Random Policy ###
 
@@ -17,14 +17,16 @@ class agent():
             rand_x = random.randint(0, 2)
             rand_y = random.randint(0, 2)
 
-            # If there is no more space on the board, skip current iteration
+            # If there is no more space on the board, skip current iteration and return illegal value
             if np.count_nonzero(board == 0) == 0:
 
-                return False
+                return [-1, -1]
 
-            # If there is a space at the current coordinate, place player's numer on the board
-            elif board[rand_x, rand_y] == 0: 
-                board[rand_x, rand_y] = self.player_num
+            # If there is a space at the current coordinate, break the loop and use current action selection
+            elif board[rand_y, rand_x] == 0: 
+                # board[rand_y, rand_x] = self.player_num
                 break
         
-        return True
+        return [rand_y, rand_x]
+
+    # def update(self, state, )
