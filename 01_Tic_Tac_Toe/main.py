@@ -8,24 +8,21 @@ Tic_Tac_Toe_Env = env()
 
 while True:
 
-    RL_player_1.play_random(Tic_Tac_Toe_Env.board)
-    RL_player_2.play_random(Tic_Tac_Toe_Env.board)
-
-    if Tic_Tac_Toe_Env.detect_win() != -1:
-
-        print('There is a winner / Game ends')
-        print(Tic_Tac_Toe_Env.board)
-        print('------------------------------')
+    # Player 1
+    RL_player_1_action = RL_player_1.act(Tic_Tac_Toe_Env.board)                                     # Player 1 chooses its action based on current state
+    next_state, reward, done = Tic_Tac_Toe_Env.step(RL_player_1.player_num, RL_player_1_action)     # Player 1's action interacts with the environment
+                                                                                                    # Due to this interaction, environment returns next state, reward, done for player 1
+    print('RL_player_1_action : {}'.format(RL_player_1_action))
+    
+    if done == 1:
         break
 
-    elif Tic_Tac_Toe_Env.detect_draw() == False:
+    # Player 2
+    RL_player_2_action = RL_player_2.act(Tic_Tac_Toe_Env.board)                                     # Player 2 chooses its action based on current state
+    next_state, reward, done = Tic_Tac_Toe_Env.step(RL_player_2.player_num, RL_player_2_action)     # Player 2's action interacts with the environment
+                                                                                                    # Due to this interaction, environment returns next state and reward for player 2
+    print('RL_player_2_action : {}'.format(RL_player_2_action))
 
-        print(Tic_Tac_Toe_Env.board)
-        print('------------------------------')
-
-    elif Tic_Tac_Toe_Env.detect_draw() == True:
-
-        print('Board is full / No Winner / Game ends')
-        print(Tic_Tac_Toe_Env.board)
-        print('------------------------------')
+    if done == 1:
         break
+    
