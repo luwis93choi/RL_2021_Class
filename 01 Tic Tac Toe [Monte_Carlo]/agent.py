@@ -55,11 +55,10 @@ class agent():
 
         self.memory.append([state, next_state, action, reward, done])
 
-    ### Update Agent's state-action value function ###
+    ### State-Action value function update ###
     def update(self):
 
         G_t = 0
-        visit_states = []
 
         for sample in reversed(self.memory):
             state = sample[0]
@@ -76,7 +75,7 @@ class agent():
                     action_idx = idx
                     break
 
-            visit_states.append(state)
+            # Update value table according to Monte Carlo Method
             G_t = reward + self.discount_factor * G_t
             V_t = self.value_table[state_idx, action_idx]
 
