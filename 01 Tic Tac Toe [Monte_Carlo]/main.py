@@ -1,3 +1,4 @@
+from numpy.core.fromnumeric import argmax
 from agent import agent
 from env import env
 
@@ -13,7 +14,7 @@ RL_player_2 = agent(player_num=2)
 
 Tic_Tac_Toe_Env = env()
 
-EPISODE = 1000
+EPISODE = 2000
 
 init_state_value_RL_player_1 = np.zeros((EPISODE, len(RL_player_1.action_space)))
 
@@ -54,8 +55,12 @@ for episode in tqdm(range(EPISODE)):
     RL_player_2.memory.clear()
     
 print('RL Player 1 Init State-Action Value : {}'.format(RL_player_1.value_table[-1]))
-print('RL Player 2 Init State-Action Value : {}'.format(RL_player_2.value_table[-1]))
+
+print('Best First Move at Initial State S0 of Game : {}'.format(RL_player_1.action_space[np.argmax(RL_player_1.value_table[-1])]))
 
 for i in range(len(RL_player_1.action_space)):
-    plt.plot(range(EPISODE), init_state_value_RL_player_1[:, i], '*-')
+    plt.plot(range(EPISODE), init_state_value_RL_player_1[:, i], '*-', label='Action {}'.format(i))
+plt.xlabel('Episode')
+plt.ylabel('State-Action Value')
+plt.legend()
 plt.show()
