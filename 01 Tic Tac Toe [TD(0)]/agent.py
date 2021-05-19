@@ -21,48 +21,58 @@ class agent():
                              [1, 0], [1, 1], [1, 2], 
                              [2, 0], [2, 1], [2, 2]]
 
-        # State space generation
-        self.state_space = product([2, 1, 0], repeat=self.grid_height * self.grid_width)
-        self.state_space = np.reshape(list(self.state_space), (-1, self.grid_height, self.grid_width))
+        # Full state space generation
+        self.full_state_space = product([2, 1, 0], repeat=self.grid_height * self.grid_width)
+        self.full_state_space = np.reshape(list(self.full_state_space), (-1, self.grid_height, self.grid_width))
                 
+        ### State space filtering ###
+        # Pick only mirror image element
+        self.state_space = []
+        for i in range(len(self.full_state_space)):
+            if(self.full_state_space[i][0][1] == self.full_state_space[i][0][2] == self.full_state_space[i][1][2] == 0):
+                self.state_space.append(self.full_state_space[i])
+        self.state_space = np.array(self.state_space)
+        
         self.value_table = np.zeros((len(self.state_space), len(self.action_space)))     # State (Height), Action Space (Width)
+        
         self.memory = []
+
+    def mirror_equal(self, board):
+
+        # print(board)
+
+        for rotation_count in range(4):
+            for mirror_idx in range(len(self.state_space)):
+                mirror = self.state_space[mirror_idx]                
+                rotated_board = np.rot90(board, rotation_count)
+                
+                if (rotated_board[0, 0] == mirror[0, 0]) and (rotated_board[1, 1] == mirror[1, 1]) and (rotated_board[2, 2] == mirror[2, 2]) and \
+                   (rotated_board[1, 0] == mirror[1, 0]) and (rotated_board[2, 0] == mirror[2, 0]) and (rotated_board[2, 1] == mirror[2, 1]):
+
+                    return mirror_idx
+        return -1
 
     def act(self, board):
 
         ### Random Policy ###
-
         # Draw random coordinate in board until it is verified as a valid move
-        while True:
-            
-            rand_action_idx = random.randint(0, len(self.action_space)-1)
+        zero_idx = np.where(board == 0)
 
-            rand_action = self.action_space[rand_action_idx]
+        if len(zero_idx) == 0:
+            return [-1, -1]
 
-            # If there is no more space on the board, skip current iteration and return illegal value
-            if np.count_nonzero(board == 0) == 0:
-
-                return [-1, -1]
-
-            # If there is a space at the current coordinate, break the loop and use current action selection
-            elif board[rand_action[0], rand_action[1]] == 0: 
-                # board[rand_y, rand_x] = self.player_num
-                break
+        rand_action_idx = random.randint(0, len(zero_idx[0])-1)
+        
+        rand_action = [zero_idx[0][rand_action_idx], zero_idx[1][rand_action_idx]]
         
         return rand_action
 
     ### State-Action value function update ###
     def update(self, state, next_state, action, reward, done):
 
-        for idx in range(len(self.state_space)):
-            if np.array_equal(self.state_space[idx], state):
-                state_idx = idx
-                break
+        state_idx = self.mirror_equal(state)
 
-        for idx in range(len(self.state_space)):
-            if np.array_equal(self.state_space[idx], next_state):
-                next_state_idx = idx
-                break
+        next_state_idx = self.mirror_equal(next_state)
 
         for idx in range(len(self.action_space)):
             if np.array_equal(self.action_space[idx], action):
