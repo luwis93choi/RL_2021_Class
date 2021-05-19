@@ -51,32 +51,27 @@ class agent():
         
         return rand_action
 
-    def remember(self, state, next_state, action, reward, done):
-
-        self.memory.append([state, next_state, action, reward, done])
-
     ### State-Action value function update ###
-    def update(self):
+    def update(self, state, next_state, action, reward, done):
 
-        G_t = 0
+        for idx in range(len(self.state_space)):
+            if np.array_equal(self.state_space[idx], state):
+                state_idx = idx
+                break
 
-        for sample in reversed(self.memory):
-            state = sample[0]
-            action = sample[2]
-            reward = sample[3]
+        for idx in range(len(self.state_space)):
+            if np.array_equal(self.state_space[idx], next_state):
+                next_state_idx = idx
+                break
 
-            for idx in range(len(self.state_space)):
-                if np.array_equal(self.state_space[idx], state):
-                    state_idx = idx
-                    break
+        for idx in range(len(self.action_space)):
+            if np.array_equal(self.action_space[idx], action):
+                action_idx = idx
+                break
 
-            for idx in range(len(self.action_space)):
-                if np.array_equal(self.action_space[idx], action):
-                    action_idx = idx
-                    break
+        # Update value table according to TD(0)
+        V_t = self.value_table[state_idx, action_idx]
 
-            # Update value table according to Monte Carlo Method
-            G_t = reward + self.discount_factor * G_t
-            V_t = self.value_table[state_idx, action_idx]
+        V_t_1 = np.mean(self.value_table[next_state_idx, :])
 
-            self.value_table[state_idx, action_idx] = V_t + self.learning_rate * (G_t - V_t)
+        self.value_table[state_idx, action_idx] = V_t + self.learning_rate * (reward + self.discount_factor * V_t_1 - V_t)
