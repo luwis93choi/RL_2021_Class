@@ -33,21 +33,14 @@ class agent():
         ### Random Policy ###
 
         # Draw random coordinate in board until it is verified as a valid move
-        while True:
-            
-            rand_action_idx = random.randint(0, len(self.action_space)-1)
+        zero_idx = np.where(board == 0)
 
-            rand_action = self.action_space[rand_action_idx]
+        if len(zero_idx) == 0:
+            return [-1, -1]
 
-            # If there is no more space on the board, skip current iteration and return illegal value
-            if np.count_nonzero(board == 0) == 0:
-
-                return [-1, -1]
-
-            # If there is a space at the current coordinate, break the loop and use current action selection
-            elif board[rand_action[0], rand_action[1]] == 0: 
-                # board[rand_y, rand_x] = self.player_num
-                break
+        rand_action_idx = random.randint(0, len(zero_idx[0])-1)
+        
+        rand_action = [zero_idx[0][rand_action_idx], zero_idx[1][rand_action_idx]]
         
         return rand_action
 
