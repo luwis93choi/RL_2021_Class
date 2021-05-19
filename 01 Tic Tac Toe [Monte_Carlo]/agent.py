@@ -38,8 +38,6 @@ class agent():
 
     def mirror_equal(self, board):
 
-        # print(board)
-
         for rotation_count in range(4):
             for mirror_idx in range(len(self.state_space)):
                 mirror = self.state_space[mirror_idx]                
@@ -74,6 +72,7 @@ class agent():
     def update(self):
 
         G_t = 0
+        MC_error = []
 
         for sample in reversed(self.memory):
             state = sample[0]
@@ -92,3 +91,7 @@ class agent():
             V_t = self.value_table[state_idx, action_idx]
 
             self.value_table[state_idx, action_idx] = V_t + self.learning_rate * (G_t - V_t)
+
+            MC_error.append(G_t - V_t)
+
+        return np.mean(np.array(MC_error))
