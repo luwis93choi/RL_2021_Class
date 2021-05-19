@@ -66,7 +66,6 @@ class env():
 
         next_state = copy.deepcopy(self.board)
 
-
         if self.detect_win() != -1:
 
             # print('There is a winner / Game ends')
@@ -77,6 +76,7 @@ class env():
 
         elif self.detect_draw() == False:
 
+            # print('Keep Playing')
             # print(self.board)
             # print('------------------------------')
             done = 0
