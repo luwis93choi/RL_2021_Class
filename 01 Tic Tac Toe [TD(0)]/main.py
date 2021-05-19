@@ -14,7 +14,7 @@ RL_player_2 = agent(player_num=2)
 
 Tic_Tac_Toe_Env = env()
 
-EPISODE = 10000
+EPISODE = 40000
 
 init_state_value_RL_player_1 = np.zeros((EPISODE, len(RL_player_1.action_space)))
 
@@ -23,7 +23,6 @@ for episode in tqdm(range(EPISODE)):
     Tic_Tac_Toe_Env.reset()
     
     while True:
-
         # Player 1
         RL_player_1_action = RL_player_1.act(Tic_Tac_Toe_Env.board)     # Player 1 chooses its action based on current state
         
